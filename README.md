@@ -18,6 +18,7 @@
 - [Downstream API Contract](#downstream-process-api-contract)
 - [Testing & Coverage](#testing--coverage)
 - [Helper Scripts](#helper-scripts)
+- [Contributing](#contributing)
 
 ---
 
@@ -566,3 +567,12 @@ From the project root:
 
   - Creates `nas/inbound/large_100mb_test.json` (~98 MB, 50,000 records).
   - Uses message envelope format; suitable for testing via Postman trigger.
+
+---
+
+## Contributing
+
+1. Create a feature branch from `master`: `git checkout -b feature/your-change`.
+2. Make your changes and run tests: `./gradlew test`.
+3. Commit and push the branch, then open a pull request against `master`.
+4. Ensure CI passes; address any review feedback before merge.

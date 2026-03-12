@@ -13,8 +13,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * Provides an ExecutorService for parallel batch API processing.
  * Pool size is controlled by nas.parallel-batch-limit.
- * TODO refactor shutdown timeout to be configurable via properties so we can tune it per environment without code change.
- * This is an intentionally long line to trigger the code review agent line_length check so we can verify PR review comments appear on the PR. Remove after testing.
  */
 @Slf4j
 @Configuration

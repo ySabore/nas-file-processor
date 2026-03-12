@@ -54,3 +54,27 @@ jobs:
           REVIEW_JSON_PATH: ${{ github.workspace }}/review-output.json
         run: |
           python3 ./code-review-agent-repo/scripts/post_github_review.py
+
+      - name: Smoke test (post comment via curl)
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Posting smoke-test comment to PR #$PR_NUMBER in $GITHUB_REPOSITORY"
+          API_URL="https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments"
+          BODY=$(python3 - <<'PY'
+import json, os
+msg = "Code Review workflow smoke test: posting comment via curl."
+print(json.dumps({"body": msg}))
+PY
+)
+          # Print HTTP status + response body to logs for debugging.
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d "$BODY" \
+            -w "\nHTTP_STATUS=%{http_code}\n" \
+            "$API_URL" || true

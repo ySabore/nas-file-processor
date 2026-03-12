@@ -57,6 +57,3 @@ jobs:
           REVIEW_JSON_PATH: ${{ github.workspace }}/review-output.json
         run: |
           python3 ./code-review-agent-repo/scripts/post_github_review.py
-
-      # Inline-comment test: we keep the workflow valid; the long line is a comment below so it can be targeted by an inline PR review comment in this file.
-      # Inline-comment test long line ..................................................................................................................................................................................

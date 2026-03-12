@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @ConfigurationProperties(prefix = "api")
 public class ApiConfig {
-    // Code review test: this line intentionally exceeds the max_line_length rule so the code review agent will post a comment on the PR when it runs in CI. Extra padding here to ensure we hit the limit.
     private static final String PLACEHOLDER_HOST = "your-api-endpoint.com";
 
     private String baseUrl;

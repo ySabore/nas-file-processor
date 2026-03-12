@@ -1,0 +1,26 @@
+# Code review agent config for this repo (used in GitHub Actions on PRs)
+# See https://github.com/ySabore/code-review-agent
+rules:
+  max_line_length: 120
+  disallow_todo_without_ticket: true
+
+paths:
+  include: ["**/*.java", "**/*.yml", "**/*.yaml", "**/*.gradle", "**/*.py"]
+  # Only review source and Gradle config (skip README, docs, scripts, etc.)
+  scan_only_under: ["src", "gradle"]
+  exclude:
+    - "**/build/**"
+    - "**/.gradle/**"
+    - "**/node_modules/**"
+    - "**/nas/**"           # runtime/archive data, not source
+    - "**/.DS_Store"
+    - "**/gradlew"
+    - "**/gradlew.bat"
+    - "**/gradle/wrapper/**"
+    - "**/samples/**"      # sample JSON
+    - "**/docs/**"         # docs often have long lines
+
+output:
+  format: text
+  # Report-only: set to true to fail the PR when the agent finds issues
+  fail_on_issues: false

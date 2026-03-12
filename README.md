@@ -576,3 +576,5 @@ From the project root:
 2. Make your changes and run tests: `./gradlew test`.
 3. Commit and push the branch, then open a pull request against `master`.
 4. Ensure CI passes; address any review feedback before merge.
+
+**Code review agent:** Each PR runs the [code-review-agent](https://github.com/ySabore/code-review-agent) (see workflow `.github/workflows/code-review.yml`). It reports style/consistency issues in the Actions log. Config: `.code-review.yaml` (set `output.fail_on_issues: true` to make the check block the PR).

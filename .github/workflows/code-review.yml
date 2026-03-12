@@ -41,7 +41,6 @@ jobs:
           echo "count=$COUNT" >> $GITHUB_OUTPUT
 
       - name: Post PR review comments
-        if: steps.agent.outputs.count != '0'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}

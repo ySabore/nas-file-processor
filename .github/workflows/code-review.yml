@@ -4,7 +4,7 @@
 name: Code Review
 
 on:
-  pull_request:
+  pull_request_target:
     branches: [ main, master ]
 
 permissions:
@@ -13,11 +13,15 @@ permissions:
 
 jobs:
   review:
+    # Safety: only run with write-capable token on same-repo PRs
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          # Review the PR's actual code, not the base branch
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
       - name: Set up Python

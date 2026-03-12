@@ -4,7 +4,7 @@
 name: Code Review
 
 on:
-  pull_request_target:
+  pull_request:
     branches: [ main, master ]
 
 permissions:
@@ -13,15 +13,11 @@ permissions:
 
 jobs:
   review:
-    # Safety: only run with write-capable token on same-repo PRs
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # Review the PR's actual code, not the base branch
-          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -50,7 +46,9 @@ jobs:
 
       - name: Post PR review comments
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          # If PR token is read-only (403 Resource not accessible by integration),
+          # set a classic PAT as repo secret CODE_REVIEW_BOT_TOKEN and it will be used instead.
+          GITHUB_TOKEN: ${{ secrets.CODE_REVIEW_BOT_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_WORKSPACE: ${{ github.workspace }}
           PR_NUMBER: ${{ github.event.pull_request.number }}

@@ -1,0 +1,121 @@
+plugins {
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'java'
+    id 'groovy'
+    id 'jacoco'
+    id 'org.springframework.cloud.contract' version '4.0.5'
+}
+
+group = 'com.example'
+version = '1.0.0'
+sourceCompatibility = '17'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:4.0.5"
+    }
+}
+
+ext {
+    lombokVersion = '1.18.34'
+}
+
+dependencies {
+    // Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Scheduling
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+
+    // Actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Jackson (JSON streaming + Java Time)
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    // Mail (for final response notifications)
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // Retry
+    implementation 'org.springframework.retry:spring-retry'
+    implementation 'org.springframework:spring-aspects'
+
+    // HTTP Client (reactive WebClient)
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Lombok (explicit version compatible with newer JDKs)
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    // Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    // Cucumber BDD (standalone step defs with MockMvc, no cucumber-spring)
+    testImplementation 'io.cucumber:cucumber-java:7.18.1'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.18.1'
+    testImplementation 'org.junit.platform:junit-platform-suite:1.10.2'
+
+    // Groovy contract tests (Spock)
+    testImplementation 'org.apache.groovy:groovy:4.0.6'
+    testImplementation platform('org.spockframework:spock-bom:2.4-M4-groovy-4.0')
+    testImplementation 'org.spockframework:spock-core'
+    testImplementation 'org.spockframework:spock-spring'
+
+    // Spring Cloud Contract verifier (contractTest source set)
+    contractTestImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+    contractTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    contractTestRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// Run contract tests as part of check (optional: uncomment to enforce)
+// tasks.named('check').configure { dependsOn contractTest }
+
+contracts {
+    testFramework = 'JUNIT5'
+    testMode = 'MockMvc'
+    baseClassForTests = 'com.example.nasprocessor.contract.ProcessorBase'
+    baseClassMappings {
+        baseClassMapping('.*trigger_skipped.*', 'com.example.nasprocessor.contract.TriggerSkippedBase')
+        baseClassMapping('.*trigger_failures.*', 'com.example.nasprocessor.contract.TriggerWithFailuresBase')
+        baseClassMapping('.*archive_disabled.*', 'com.example.nasprocessor.contract.ArchiveDisabledBase')
+    }
+    packageWithBaseClasses = 'com.example.nasprocessor.contract'
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+// Produce an executable fat JAR
+bootJar {
+    archiveFileName = "nas-file-processor-${version}.jar"
+}

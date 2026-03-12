@@ -1,0 +1,28 @@
+# E2E / automation test profile
+# NAS paths and api.base-url are set via @DynamicPropertySource in E2eAutomationTest
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+# Disable startup processing and scheduler so tests trigger cycles explicitly
+processor:
+  run-on-startup: false
+
+scheduler:
+  enabled: false
+
+# Reduce timeout for faster test failure when mock is not ready
+api:
+  timeout-seconds: 5
+  max-retries: 1
+  retry-delay-ms: 50
+
+nas:
+  use-lock-file: false
+  batch-size: 10
+
+logging:
+  level:
+    com.example.nasprocessor: INFO
+    org.springframework: WARN

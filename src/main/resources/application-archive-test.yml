@@ -1,0 +1,8 @@
+# Profile for testing archive - enable archive with 1-day retention
+# Run: ./gradlew bootRun --args='--spring.profiles.active=archive-test'
+# Then: curl -X POST http://localhost:8080/api/processor/archive
+
+nas.archive:
+  enabled: true
+  retention-days: 1
+  folder: nas/archive

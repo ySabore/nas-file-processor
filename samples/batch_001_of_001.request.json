@@ -1,0 +1,131 @@
+{
+  "message": {
+    "aboutVersions": {
+      "aboutVersion": {
+        "createdDateTime": "2026-03-05",
+        "aboutVersionIdentifier": "v1.0.0",
+        "requestingSystem": "nasFileProcessor"
+      }
+    },
+    "requestData": {
+      "defaultEventList": [
+        {
+          "loan_id": "LN-E2E-00001",
+          "servicer_id": "SVC-00008",
+          "reported_date": "2026-03-05",
+          "borrower": {
+            "borrower_id": "BRW-E2E-01",
+            "name": "E2E Test Borrower",
+            "age": 50,
+            "credit_score_at_origination": 720,
+            "employment_status": "Employed",
+            "default_reason": "Temporary hardship"
+          },
+          "loan_details": {
+            "loan_type": "Personal Loan",
+            "principal_amount_usd": 50000,
+            "outstanding_balance_usd": 45000,
+            "interest_rate_percentage": 8.5,
+            "term_months": 36,
+            "origination_date": "2024-01-15"
+          },
+          "bankruptcy": {
+            "bankruptcy_filed": false,
+            "bankruptcy_case_number": null,
+            "bankruptcy_chapter": null,
+            "bankruptcy_filed_date": null,
+            "bankruptcy_discharged_date": null,
+            "bankruptcy_dismissed_date": null,
+            "bankruptcy_status": null,
+            "attorney_name": null,
+            "attorney_phone": null,
+            "court_name": null,
+            "proof_of_claim_filed": false,
+            "proof_of_claim_filed_date": null
+          },
+          "foreclosure": {
+            "foreclosure_initiated": false,
+            "foreclosure_type": null,
+            "foreclosure_start_date": null,
+            "foreclosure_sale_date": null,
+            "foreclosure_status": null,
+            "referral_date": null,
+            "attorney_name": null,
+            "attorney_phone": null,
+            "property_address": null,
+            "property_value_usd": null,
+            "upset_bid_amount_usd": null,
+            "hud_approved": null
+          },
+          "events": [
+            {
+              "event_id": "EVT-E2E-001",
+              "event_code": "DLQ-30",
+              "event_description": "Loan became 30 days delinquent",
+              "event_reported_date": "2026-02-01",
+              "comments": "E2E test event."
+            }
+          ]
+        },
+        {
+          "loan_id": "LN-E2E-00002",
+          "servicer_id": "SVC-00099",
+          "reported_date": "2026-03-05",
+          "borrower": {
+            "borrower_id": "BRW-E2E-02",
+            "name": "Second E2E Borrower",
+            "age": 45,
+            "credit_score_at_origination": 680,
+            "employment_status": "Self-Employed",
+            "default_reason": "Income reduction"
+          },
+          "loan_details": {
+            "loan_type": "Business Loan",
+            "principal_amount_usd": 100000,
+            "outstanding_balance_usd": 85000,
+            "interest_rate_percentage": 7.25,
+            "term_months": 60,
+            "origination_date": "2023-06-01"
+          },
+          "bankruptcy": {
+            "bankruptcy_filed": false,
+            "bankruptcy_case_number": null,
+            "bankruptcy_chapter": null,
+            "bankruptcy_filed_date": null,
+            "bankruptcy_discharged_date": null,
+            "bankruptcy_dismissed_date": null,
+            "bankruptcy_status": null,
+            "attorney_name": null,
+            "attorney_phone": null,
+            "court_name": null,
+            "proof_of_claim_filed": false,
+            "proof_of_claim_filed_date": null
+          },
+          "foreclosure": {
+            "foreclosure_initiated": false,
+            "foreclosure_type": null,
+            "foreclosure_start_date": null,
+            "foreclosure_sale_date": null,
+            "foreclosure_status": null,
+            "referral_date": null,
+            "attorney_name": null,
+            "attorney_phone": null,
+            "property_address": null,
+            "property_value_usd": null,
+            "upset_bid_amount_usd": null,
+            "hud_approved": null
+          },
+          "events": [
+            {
+              "event_id": "EVT-E2E-002",
+              "event_code": "DLQ-60",
+              "event_description": "Loan became 60 days delinquent",
+              "event_reported_date": "2026-02-15",
+              "comments": "E2E test event 2."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

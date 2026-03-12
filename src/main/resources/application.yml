@@ -1,0 +1,93 @@
+spring:
+  application:
+    name: nas-file-processor
+
+  quartz:
+    job-store-type: memory
+    properties:
+      org.quartz.threadPool.threadCount: 5
+
+server:
+  port: 8080
+
+# NAS folder configuration (relative to the working directory)
+nas:
+  folders:
+    inbound: nas/inbound
+    processing: nas/processing
+    error: nas/error
+    completed: nas/completed
+  batch-size: 100
+  # Max concurrent API calls per file. Set to 1 for sequential processing.
+  parallel-batch-limit: 5
+  file-extension: .json
+  # When true, scan subfolders recursively and preserve folder structure in completed/error
+  scan-recursive: true
+  # Lock file to prevent duplicate processing (important for ControlM)
+  use-lock-file: true
+
+# responses folder configured separately (used by ResponseFileWriterService)
+nas.folders.responses: nas/responses   # per-batch + final response files written here
+
+# Archive: move old files to nas/archive/YYYY-MM/ to manage disk space (disabled by default)
+nas.archive:
+  enabled: false
+  retention-days: 30
+  folder: nas/archive
+  cron: "0 0 2 * * *"   # daily at 2 AM
+
+# External API configuration
+api:
+  base-url: http://localhost:8081
+  endpoint: /api/v1/process
+  about-version-identifier: v1.0.0
+  requesting-system: nasFileProcessor
+  timeout-seconds: 30
+  max-retries: 3
+  retry-delay-ms: 2000
+  # API key or Bearer token
+  auth-token: ${API_AUTH_TOKEN:your-token-here}
+
+# Run one processing cycle when the app starts (processes any JSON already in inbound)
+processor.run-on-startup: true
+
+# Email notification: send summary when processing cycle completes (disabled by default)
+nas.email:
+  enabled: false
+  # Distribution list - recipients for final response summary
+  distribution:
+    - team@example.com
+    - ops@example.com
+
+# Spring Mail (configure for your SMTP server when nas.email.enabled=true)
+spring.mail:
+  host: smtp.example.com
+  port: 587
+  username: ${MAIL_USERNAME:}
+  password: ${MAIL_PASSWORD:}
+  properties.mail.smtp.auth: true
+  properties.mail.smtp.starttls.enable: true
+
+# ControlM job triggers this endpoint - schedule is a fallback
+scheduler:
+  # Cron: every 10 minutes (used if ControlM calls the trigger endpoint)
+  cron: "0 */10 * * * *"
+  enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.example.nasprocessor: DEBUG
+    org.springframework: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/nas-processor.log

@@ -1,0 +1,21 @@
+# Profile for testing email with MailHog (local SMTP)
+# 1. Start MailHog: docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
+# 2. Run app: ./gradlew bootRun --args='--spring.profiles.active=email-test'
+# 3. Put a JSON file in nas/inbound and trigger: curl -X POST http://localhost:8080/api/processor/trigger
+# 4. View emails at http://localhost:8025
+
+spring:
+  mail:
+    host: localhost
+    port: 1025
+    username: ""
+    password: ""
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+
+nas:
+  email:
+    enabled: true
+    distribution:
+      - test@example.com

@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAS File Processor — Jira User Stories</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-hover: #79b8ff;
+      --success: #3fb950;
+      --epic: #a371f7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      line-height: 1.5;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      min-height: 100vh;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .detail-panel { border-left: none; border-top: 1px solid var(--border); }
+    }
+    .list-panel {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      max-height: 100vh;
+    }
+    .list-panel h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 1rem 1.25rem;
+      margin: 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .epic {
+      padding: 0.5rem 1.25rem 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--epic);
+    }
+    .story-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      width: 100%;
+      padding: 0.6rem 1.25rem;
+      text-align: left;
+      background: none;
+      border: none;
+      border-left: 3px solid transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .story-left {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      min-width: 0;
+    }
+    .story-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .story-right {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex: 0 0 auto;
+    }
+    .story-item:hover {
+      background: rgba(88, 166, 255, 0.08);
+      border-left-color: var(--accent);
+    }
+    .story-item.active {
+      background: rgba(88, 166, 255, 0.12);
+      border-left-color: var(--accent);
+    }
+    .story-id {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-right: 0.5rem;
+    }
+    .detail-panel {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      max-height: 100vh;
+      border-left: 1px solid var(--border);
+    }
+    .detail-panel .empty-state {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      padding: 2rem 0;
+    }
+    .detail-header {
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .detail-header h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0 0 0.35rem 0;
+      color: var(--text);
+    }
+    .detail-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .detail-section {
+      margin-bottom: 1.25rem;
+    }
+    .detail-section h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin: 0 0 0.5rem 0;
+    }
+    .detail-section p, .detail-section ul {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .detail-section ul {
+      padding-left: 1.25rem;
+    }
+    .detail-section li { margin-bottom: 0.25rem; }
+    .detail-section code, .detail-section pre {
+      background: rgba(0,0,0,0.25);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+    .detail-section pre {
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      margin: 0.5rem 0 0 0;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.2em 0.5em;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      background: var(--surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .badge + .badge { margin-left: 0.35rem; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="list-panel">
+      <h1>NAS File Processor — User Stories</h1>
+
+      <div class="epic">Application & Configuration</div>
+      <button type="button" class="story-item" data-id="NAS-1"><span class="story-id">NAS-1</span> Application bootstrap with scheduling and retry</button>
+      <button type="button" class="story-item" data-id="NAS-2"><span class="story-id">NAS-2</span> NAS folder and processing configuration</button>
+      <button type="button" class="story-item" data-id="NAS-3"><span class="story-id">NAS-3</span> External API and WebClient configuration</button>
+      <button type="button" class="story-item" data-id="NAS-4"><span class="story-id">NAS-4</span> Jackson/JSON configuration</button>
+      <button type="button" class="story-item" data-id="NAS-5"><span class="story-id">NAS-5</span> Parallel batch processing executor</button>
+
+      <div class="epic">REST API</div>
+      <button type="button" class="story-item" data-id="NAS-6"><span class="story-id">NAS-6</span> Trigger processing via REST</button>
+      <button type="button" class="story-item" data-id="NAS-7"><span class="story-id">NAS-7</span> Processing status endpoint</button>
+      <button type="button" class="story-item" data-id="NAS-8"><span class="story-id">NAS-8</span> Archive trigger via REST</button>
+      <button type="button" class="story-item" data-id="NAS-9"><span class="story-id">NAS-9</span> Health endpoint for load balancers</button>
+
+      <div class="epic">File orchestration & lifecycle</div>
+      <button type="button" class="story-item" data-id="NAS-10"><span class="story-id">NAS-10</span> Single processing cycle with overlap prevention</button>
+      <button type="button" class="story-item" data-id="NAS-11"><span class="story-id">NAS-11</span> Inbound file discovery</button>
+      <button type="button" class="story-item" data-id="NAS-12"><span class="story-id">NAS-12</span> Copy to processing and lock file</button>
+      <button type="button" class="story-item" data-id="NAS-13"><span class="story-id">NAS-13</span> Move to completed folder</button>
+      <button type="button" class="story-item" data-id="NAS-14"><span class="story-id">NAS-14</span> Move to error with sidecar</button>
+
+      <div class="epic">JSON processing</div>
+      <button type="button" class="story-item" data-id="NAS-15"><span class="story-id">NAS-15</span> Message envelope parsing and deduplication</button>
+      <button type="button" class="story-item" data-id="NAS-16"><span class="story-id">NAS-16</span> Legacy JSON format support</button>
+      <button type="button" class="story-item" data-id="NAS-17"><span class="story-id">NAS-17</span> Large-file streaming (100MB+)</button>
+
+      <div class="epic">Batch API & retry</div>
+      <button type="button" class="story-item" data-id="NAS-18"><span class="story-id">NAS-18</span> Batch API calls with retry and recover</button>
+      <button type="button" class="story-item" data-id="NAS-19"><span class="story-id">NAS-19</span> Parallel batch execution</button>
+
+      <div class="epic">Response writing</div>
+      <button type="button" class="story-item" data-id="NAS-20"><span class="story-id">NAS-20</span> Per-batch response folder layout</button>
+      <button type="button" class="story-item" data-id="NAS-21"><span class="story-id">NAS-21</span> Final consolidated response file</button>
+      <button type="button" class="story-item" data-id="NAS-22"><span class="story-id">NAS-22</span> Error FINAL response on failure</button>
+
+      <div class="epic">Processing result & routing</div>
+      <button type="button" class="story-item" data-id="NAS-23"><span class="story-id">NAS-23</span> File processing result and routing</button>
+
+      <div class="epic">Archive</div>
+      <button type="button" class="story-item" data-id="NAS-24"><span class="story-id">NAS-24</span> Archive service (retention and move)</button>
+      <button type="button" class="story-item" data-id="NAS-25"><span class="story-id">NAS-25</span> Archive REST trigger</button>
+      <button type="button" class="story-item" data-id="NAS-26"><span class="story-id">NAS-26</span> Archive scheduler</button>
+
+      <div class="epic">Email & scheduling</div>
+      <button type="button" class="story-item" data-id="NAS-27"><span class="story-id">NAS-27</span> Email notification after cycle</button>
+      <button type="button" class="story-item" data-id="NAS-28"><span class="story-id">NAS-28</span> File processing scheduler</button>
+      <button type="button" class="story-item" data-id="NAS-29"><span class="story-id">NAS-29</span> Process on startup</button>
+
+      <div class="epic">Models & exceptions</div>
+      <button type="button" class="story-item" data-id="NAS-30"><span class="story-id">NAS-30</span> Request/response DTOs</button>
+      <button type="button" class="story-item" data-id="NAS-31"><span class="story-id">NAS-31</span> Custom exceptions</button>
+
+      <div class="epic">Testing & documentation</div>
+      <button type="button" class="story-item" data-id="NAS-32"><span class="story-id">NAS-32</span> Archive-test profile</button>
+      <button type="button" class="story-item" data-id="NAS-33"><span class="story-id">NAS-33</span> Email-test profile</button>
+      <button type="button" class="story-item" data-id="NAS-34"><span class="story-id">NAS-34</span> README and documentation</button>
+
+      <div class="epic">CI/CD & Environment Promotion (Jenkins)</div>
+      <button type="button" class="story-item" data-id="NAS-35"><span class="story-id">NAS-35</span> Jenkins pipeline: build, test, package</button>
+      <button type="button" class="story-item" data-id="NAS-36"><span class="story-id">NAS-36</span> Deploy to DEV from Jenkins</button>
+      <button type="button" class="story-item" data-id="NAS-37"><span class="story-id">NAS-37</span> Promote to SIT with approvals</button>
+      <button type="button" class="story-item" data-id="NAS-38"><span class="story-id">NAS-38</span> Promote to UAT with approvals</button>
+      <button type="button" class="story-item" data-id="NAS-39"><span class="story-id">NAS-39</span> Promote to PERF with performance smoke</button>
+      <button type="button" class="story-item" data-id="NAS-40"><span class="story-id">NAS-40</span> Promote to PROD with change controls</button>
+      <button type="button" class="story-item" data-id="NAS-41"><span class="story-id">NAS-41</span> Environment-specific config and secrets management</button>
+      <button type="button" class="story-item" data-id="NAS-42"><span class="story-id">NAS-42</span> Rollback strategy for failed deployments</button>
+      <button type="button" class="story-item" data-id="NAS-43"><span class="story-id">NAS-43</span> Post-deploy smoke tests and health verification</button>
+
+      <div class="epic">Production Readiness (TODO)</div>
+      <button type="button" class="story-item" data-id="NAS-44"><span class="story-id">NAS-44</span> Observability: structured logging + metrics</button>
+      <button type="button" class="story-item" data-id="NAS-45"><span class="story-id">NAS-45</span> Alerts and dashboards for operations</button>
+      <button type="button" class="story-item" data-id="NAS-46"><span class="story-id">NAS-46</span> Security hardening and dependency scanning</button>
+      <button type="button" class="story-item" data-id="NAS-47"><span class="story-id">NAS-47</span> Resilience hardening: timeouts, rate limits, circuit breaker</button>
+      <button type="button" class="story-item" data-id="NAS-48"><span class="story-id">NAS-48</span> Runbook + on-call operational procedures</button>
+      <button type="button" class="story-item" data-id="NAS-49"><span class="story-id">NAS-49</span> Disaster recovery and data retention considerations</button>
+      <button type="button" class="story-item" data-id="NAS-50"><span class="story-id">NAS-50</span> Performance/load testing in PERF environment</button>
+    </aside>
+
+    <main class="detail-panel">
+      <div id="empty-state" class="empty-state">
+        <div style="margin-bottom: 0.75rem;">Click a user story in the list to view its details.</div>
+        <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+          <div style="font-weight: 600; margin-bottom: 0.35rem; color: var(--text);">Suggested implementation sequence</div>
+          <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">
+            Order is based on dependencies (config → models → file mgmt → JSON → API → responses → orchestration → REST → sched/email → archive → profiles/docs).
+          </div>
+          <div id="sequence-list"></div>
+        </div>
+      </div>
+      <div id="detail-content" style="display: none;"></div>
+    </main>
+  </div>
+
+  <script>
+    // Story sizing: points are meant for mid-level Java developers.
+    // Sequence: a dependency-first order to reach end-to-end value early.
+    const planning = {
+      "NAS-1": { sequence: 1, points: 2 },
+      "NAS-2": { sequence: 2, points: 3 },
+      "NAS-3": { sequence: 3, points: 3 },
+      "NAS-4": { sequence: 4, points: 1 },
+      "NAS-30": { sequence: 5, points: 3 },
+      "NAS-31": { sequence: 6, points: 1 },
+      "NAS-5": { sequence: 7, points: 2 },
+      "NAS-11": { sequence: 8, points: 5 },
+      "NAS-12": { sequence: 9, points: 3 },
+      "NAS-15": { sequence: 10, points: 5 },
+      "NAS-16": { sequence: 11, points: 3 },
+      "NAS-17": { sequence: 12, points: 5 },
+      "NAS-18": { sequence: 13, points: 5 },
+      "NAS-19": { sequence: 14, points: 3 },
+      "NAS-20": { sequence: 15, points: 3 },
+      "NAS-21": { sequence: 16, points: 3 },
+      "NAS-22": { sequence: 17, points: 2 },
+      "NAS-23": { sequence: 18, points: 2 },
+      "NAS-10": { sequence: 19, points: 3 },
+      "NAS-6": { sequence: 20, points: 3 },
+      "NAS-7": { sequence: 21, points: 1 },
+      "NAS-9": { sequence: 22, points: 1 },
+      "NAS-28": { sequence: 23, points: 2 },
+      "NAS-29": { sequence: 24, points: 1 },
+      "NAS-27": { sequence: 25, points: 3 },
+      "NAS-24": { sequence: 26, points: 5 },
+      "NAS-26": { sequence: 27, points: 2 },
+      "NAS-8": { sequence: 28, points: 1 },
+      "NAS-25": { sequence: 29, points: 1 },
+      "NAS-32": { sequence: 30, points: 1 },
+      "NAS-33": { sequence: 31, points: 1 },
+      "NAS-34": { sequence: 32, points: 2 },
+
+      "NAS-35": { sequence: 33, points: 5 },
+      "NAS-41": { sequence: 34, points: 5 },
+      "NAS-36": { sequence: 35, points: 3 },
+      "NAS-43": { sequence: 36, points: 3 },
+      "NAS-37": { sequence: 37, points: 2 },
+      "NAS-38": { sequence: 38, points: 2 },
+      "NAS-39": { sequence: 39, points: 3 },
+      "NAS-50": { sequence: 40, points: 5 },
+      "NAS-40": { sequence: 41, points: 3 },
+      "NAS-42": { sequence: 42, points: 3 },
+
+      "NAS-44": { sequence: 43, points: 5 },
+      "NAS-45": { sequence: 44, points: 3 },
+      "NAS-46": { sequence: 45, points: 5 },
+      "NAS-47": { sequence: 46, points: 8 },
+      "NAS-48": { sequence: 47, points: 3 },
+      "NAS-49": { sequence: 48, points: 2 }
+    };
+
+    function getPlan(id) {
+      return planning[id] ?? { sequence: 999, points: 0 };
+    }
+
+    const stories = {
+      "NAS-1": {
+        title: "Application bootstrap with scheduling and retry",
+        story: "As an operator, I want the application to start with scheduling and retry enabled so that batch processing and resilience are available out of the box.",
+        acceptance: [
+          "Spring Boot application starts with @SpringBootApplication.",
+          "@EnableScheduling is present for cron-based jobs.",
+          "@EnableRetry is present for retryable API calls.",
+          "application.yml and application.properties provide server, NAS, API, archive, email, and scheduler configuration.",
+        ],
+        technical: "Main class: NasFileProcessorApplication. Configuration in application.yml and application.properties.",
+        implementation: "NasFileProcessorApplication.java, application.yml, application.properties",
+      },
+      "NAS-2": {
+        title: "NAS folder and processing configuration",
+        story: "As an operator, I want configurable NAS paths and processing options so that I can adapt the processor to our environment without code changes.",
+        acceptance: [
+          "Configurable folders: inbound, processing, completed, error, responses.",
+          "Configurable batch-size, parallel-batch-limit, file-extension (e.g. .json), scan-recursive, use-lock-file.",
+          "Configuration is validated and bound via @ConfigurationProperties(prefix = \"nas\").",
+        ],
+        technical: "NasProperties binds nas.* from YAML. Folders and options are used by FileManagementService and orchestration.",
+        implementation: "NasProperties.java, application.yml (nas.folders.*, nas.batch-size, nas.parallel-batch-limit, nas.file-extension, nas.scan-recursive, nas.use-lock-file)",
+      },
+      "NAS-3": {
+        title: "External API and WebClient configuration",
+        story: "As an operator, I want the downstream API URL, timeouts, retries, and auth to be configurable so that we can point to different environments and tune reliability.",
+        acceptance: [
+          "api.base-url, endpoint, timeouts (connect/read/write), retries, and auth token are configurable.",
+          "WebClient bean is created with these timeouts.",
+          "Startup validation ensures api.base-url is set when required.",
+        ],
+        technical: "ApiConfig validates base-url and builds WebClient with timeout and retry settings.",
+        implementation: "ApiConfig.java, application.yml (api.*)",
+      },
+      "NAS-4": {
+        title: "Jackson/JSON configuration",
+        story: "As a developer, I want a consistent ObjectMapper with Java 8 time support and lenient unknown properties so that API and file parsing behave predictably.",
+        acceptance: [
+          "ObjectMapper bean supports Java 8 date/time types.",
+          "Unknown properties are not ignored in a way that breaks parsing; configuration is explicit.",
+        ],
+        technical: "JacksonConfig provides the ObjectMapper bean used for request/response and file parsing.",
+        implementation: "JacksonConfig.java",
+      },
+      "NAS-5": {
+        title: "Parallel batch processing executor",
+        story: "As an operator, I want batch API calls to run in parallel with a configurable thread pool so that large files are processed faster without overloading the API.",
+        acceptance: [
+          "Fixed-size thread pool is created from nas.parallel-batch-limit.",
+          "Executor is used for CompletableFuture-based parallel batch submission.",
+          "Graceful shutdown on @PreDestroy.",
+        ],
+        technical: "BatchProcessingConfig defines batchProcessingExecutor bean; JsonFileProcessorService uses it for parallel batches.",
+        implementation: "BatchProcessingConfig.java",
+      },
+      "NAS-6": {
+        title: "Trigger processing via REST",
+        story: "As a ControlM job or operator, I want to trigger one processing cycle via POST so that I can run processing on a schedule or on demand.",
+        acceptance: [
+          "POST /api/processor/trigger runs one processing cycle.",
+          "Returns 200 or 207 on success with status, counts, and details grouped by folder.",
+          "Returns 409 when a cycle is already running.",
+        ],
+        technical: "ProcessorController.trigger() delegates to FileOrchestrationService and returns TriggerResponse.",
+        implementation: "ProcessorController.java (trigger())",
+      },
+      "NAS-7": {
+        title: "Processing status endpoint",
+        story: "As an operator or load balancer, I want to know if a processing cycle is currently running so that I can avoid duplicate triggers or show status in a dashboard.",
+        acceptance: [
+          "GET /api/processor/status returns whether a cycle is running and a timestamp.",
+        ],
+        technical: "ProcessorController.status() reads from FileOrchestrationService (e.g. AtomicBoolean and last run time).",
+        implementation: "ProcessorController.java (status())",
+      },
+      "NAS-8": {
+        title: "Archive trigger via REST",
+        story: "As a ControlM job or operator, I want to trigger the archive job via POST so that old files can be archived on a schedule.",
+        acceptance: [
+          "POST /api/processor/archive runs the archive job.",
+          "Returns 200 on success with counts; 500 on failure; 503 when archive is disabled.",
+        ],
+        technical: "ProcessorController.triggerArchive() calls ArchiveService.runArchive().",
+        implementation: "ProcessorController.java (triggerArchive())",
+      },
+      "NAS-9": {
+        title: "Health endpoint for load balancers",
+        story: "As a load balancer or ControlM, I want a simple health endpoint that returns UP and service name so that liveness/readiness checks work.",
+        acceptance: [
+          "GET /api/processor/health returns status UP and service name.",
+        ],
+        technical: "ProcessorController.health() returns a simple health DTO for load balancers.",
+        implementation: "ProcessorController.java (health())",
+      },
+      "NAS-10": {
+        title: "Single processing cycle with overlap prevention",
+        story: "As an operator, I want only one processing cycle to run at a time so that files are not processed twice and state remains consistent.",
+        acceptance: [
+          "Single entry point runs: discover files, process each, move to completed/error, write responses.",
+          "Overlapping runs are prevented via AtomicBoolean (or similar).",
+          "When email is enabled, summary email is sent after a cycle that processed at least one file.",
+        ],
+        technical: "FileOrchestrationService.runProcessingCycle() is the single entry point; isRunning() exposes state.",
+        implementation: "FileOrchestrationService.java",
+      },
+      "NAS-11": {
+        title: "Inbound file discovery",
+        story: "As the system, I want to discover JSON files in the inbound folder (optionally recursive) so that all eligible files are processed.",
+        acceptance: [
+          "Scan inbound folder for files with configured extension (e.g. .json).",
+          "When scan-recursive is true, scan subfolders and preserve structure.",
+          "Exclude files that have an active lock file when use-lock-file is true.",
+        ],
+        technical: "FileManagementService.getInboundFiles() performs the scan and filtering.",
+        implementation: "FileManagementService.java (getInboundFiles())",
+      },
+      "NAS-12": {
+        title: "Copy to processing and lock file",
+        story: "As the system, I want to copy each file from inbound to processing and optionally create a lock file so that the same file is not picked up twice.",
+        acceptance: [
+          "File is copied from inbound to processing; original remains in inbound until processing completes.",
+          "When use-lock-file is true, a .lock file is created in inbound and removed when done.",
+          "When recursive, path structure is preserved in processing.",
+        ],
+        technical: "FileManagementService.copyToProcessing() and lock create/delete/check helpers.",
+        implementation: "FileManagementService.java (copyToProcessing(), lock helpers)",
+      },
+      "NAS-13": {
+        title: "Move to completed folder",
+        story: "As the system, I want to move successfully processed files from inbound to completed and clean up processing copy and lock so that completed files are stored and working copies are removed.",
+        acceptance: [
+          "Original file is moved from inbound to completed.",
+          "On name collision, timestamp can be applied to filename.",
+          "Processing copy and lock file are deleted; empty parent directories are removed when recursive.",
+        ],
+        technical: "FileManagementService.moveInboundToCompleted(), deleteEmptyParentDirectories().",
+        implementation: "FileManagementService.java (moveInboundToCompleted(), deleteEmptyParentDirectories())",
+      },
+      "NAS-14": {
+        title: "Move to error with sidecar",
+        story: "As the system, I want to move failed files to the error folder with an error sidecar so that failures are auditable and debuggable.",
+        acceptance: [
+          "Failed file is moved to error folder with timestamped name to avoid overwrites.",
+          "A .error.txt sidecar is written with the failure reason.",
+          "When recursive, path structure is preserved; empty dirs are cleaned.",
+        ],
+        technical: "FileManagementService.moveToError() writes sidecar and moves file.",
+        implementation: "FileManagementService.java (moveToError())",
+      },
+      "NAS-15": {
+        title: "Message envelope parsing and deduplication",
+        story: "As the system, I want to read records from the message envelope (message.requestData.defaultEventList) and deduplicate by loan_id so that we send correct data to the API.",
+        acceptance: [
+          "Records are read from message.requestData.defaultEventList.",
+          "Records are deduplicated by loan_id; first occurrence is kept.",
+        ],
+        technical: "JsonFileProcessorService.readAndPrepareRecords(), streamMessageDefaultEventList(), deduplicateByLoanId().",
+        implementation: "JsonFileProcessorService.java (readAndPrepareRecords(), streamMessageDefaultEventList(), deduplicateByLoanId())",
+      },
+      "NAS-16": {
+        title: "Legacy JSON format support",
+        story: "As the system, I want to support root array and object wrappers (data, records, items) so that older file formats continue to work.",
+        acceptance: [
+          "Root array [...] is supported.",
+          "Object wrappers with keys data, records, or items are supported.",
+        ],
+        technical: "JsonFileProcessorService.streamReadJsonArray() handles multiple shapes.",
+        implementation: "JsonFileProcessorService.java (streamReadJsonArray())",
+      },
+      "NAS-17": {
+        title: "Large-file streaming (100MB+)",
+        story: "As the system, I want to stream JSON for files over 1MB so that we avoid out-of-memory errors on large files.",
+        acceptance: [
+          "For files above threshold (e.g. 1MB), JSON is streamed (no full readTree).",
+          "Message envelope and legacy formats are supported in streaming mode.",
+        ],
+        technical: "JsonFileProcessorService uses size check and streamReadJsonArray/streamMessageDefaultEventList for large files.",
+        implementation: "JsonFileProcessorService.java (streaming logic)",
+      },
+      "NAS-18": {
+        title: "Batch API calls with retry and recover",
+        story: "As the system, I want to send batches to the downstream API with Bearer auth and retry on failure so that transient errors do not fail the whole file.",
+        acceptance: [
+          "Batches are sent as message envelope to the configured API endpoint.",
+          "Bearer token auth is used when configured.",
+          "@Retryable with configurable attempts and backoff; @Recover returns FAILED batch so processing continues.",
+        ],
+        technical: "ApiCallerService.sendBatch(), recoverFromApiFailure().",
+        implementation: "ApiCallerService.java (sendBatch(), recoverFromApiFailure())",
+      },
+      "NAS-19": {
+        title: "Parallel batch execution",
+        story: "As the system, I want to submit all batches for a file in parallel so that processing time is reduced.",
+        acceptance: [
+          "Batches are submitted via CompletableFuture and shared executor.",
+          "Responses are collected in order for consistent response writing.",
+        ],
+        technical: "JsonFileProcessorService uses CompletableFuture.allOf over batch requests and batchProcessingExecutor.",
+        implementation: "JsonFileProcessorService.java (parallel batch submission)",
+      },
+      "NAS-20": {
+        title: "Per-batch response folder layout",
+        story: "As an auditor or developer, I want a per-run response folder with per-batch subfolders containing request and response JSON so that I can cross-check API behavior.",
+        acceptance: [
+          "Per-run folder: {baseName}_yyyyMMdd_HHmmss under responses.",
+          "Per-batch folders: batch_NNN_of_TTT/ with request.json and response.json.",
+          "When recursive, path structure is preserved.",
+        ],
+        technical: "ResponseFileWriterService.createResponseFolder(), getBatchFolder(), writeBatchRequest(), writeBatchResponse().",
+        implementation: "ResponseFileWriterService.java (createResponseFolder(), getBatchFolder(), writeBatchRequest(), writeBatchResponse())",
+      },
+      "NAS-21": {
+        title: "Final consolidated response file",
+        story: "As an auditor or downstream system, I want a single FINAL.json per run with summary, batch list, and status so that I have a single place to see the outcome.",
+        acceptance: [
+          "File <name>.FINAL.json is written in the same response run folder.",
+          "Contains message-envelope shape: summary, batch list, status; success/partial/failure summary text.",
+        ],
+        technical: "ResponseFileWriterService.writeFinalResponse(); FinalFileResponse, ApiMessageResponse models.",
+        implementation: "ResponseFileWriterService.java (writeFinalResponse()), FinalFileResponse.java, ApiMessageResponse.java",
+      },
+      "NAS-22": {
+        title: "Error FINAL response on failure",
+        story: "As an auditor, I want an error FINAL response written when read/parse/IO fails so that the response folder still documents the failure.",
+        acceptance: [
+          "On read/parse/IO failure, an error FINAL response is written in the same response folder.",
+          "File is moved to error with sidecar as in NAS-14.",
+        ],
+        technical: "JsonFileProcessorService.writeErrorFinalResponse(); catch blocks call moveToError and writeErrorFinalResponse.",
+        implementation: "JsonFileProcessorService.java (writeErrorFinalResponse(), catch blocks)",
+      },
+      "NAS-23": {
+        title: "File processing result and routing",
+        story: "As the system, I want a clear per-file result (SUCCESS/PARTIAL_SUCCESS/FAILED) and routing to completed vs error so that files are stored correctly.",
+        acceptance: [
+          "FileProcessingResult has status and finalResponseFilePath.",
+          "Routing to completed vs error is based on batch outcomes.",
+        ],
+        technical: "JsonFileProcessorService.processFile() builds FileProcessingResult and routes; FileProcessingResult model.",
+        implementation: "JsonFileProcessorService.java (processFile(), routing), FileProcessingResult.java",
+      },
+      "NAS-24": {
+        title: "Archive service (retention and move)",
+        story: "As an operator, I want files older than retention days in completed, error, and responses to be moved to archive so that disk space is managed.",
+        acceptance: [
+          "Files older than nas.archive.retention-days are moved from completed, error, and responses to nas/archive/YYYY-MM/.",
+          "Structure is preserved; .error.txt is moved with error files; empty dirs are deleted.",
+          "Runs only when nas.archive.enabled=true.",
+        ],
+        technical: "ArchiveService.runArchive(), archiveFolderRecursive(), archiveResponsesFolderRecursive(), deleteEmptyFolders().",
+        implementation: "ArchiveService.java",
+      },
+      "NAS-25": {
+        title: "Archive REST trigger",
+        story: "As ControlM or ops, I want to trigger archive via POST so that archive can run on a schedule.",
+        acceptance: [
+          "POST /api/processor/archive runs archive; response includes counts and optional error message.",
+        ],
+        technical: "ProcessorController.triggerArchive() returns archive result.",
+        implementation: "ProcessorController.java (triggerArchive())",
+      },
+      "NAS-26": {
+        title: "Archive scheduler",
+        story: "As an operator, I want archive to run on a configurable cron (e.g. daily at 2 AM) when archive is enabled so that I do not have to trigger it manually.",
+        acceptance: [
+          "Scheduled job runs at nas.archive.cron when archive is enabled.",
+        ],
+        technical: "ArchiveScheduler with @Scheduled(cron = \"${nas.archive.cron:...}\").",
+        implementation: "ArchiveScheduler.java",
+      },
+      "NAS-27": {
+        title: "Email notification after cycle",
+        story: "As an operator, I want a summary email after each cycle that processed at least one file so that I am informed without checking logs.",
+        acceptance: [
+          "When nas.email.enabled=true, send email to nas.email.distribution after a cycle with at least one processed file.",
+          "Email includes JSON and HTML attachments (same structure as trigger response).",
+        ],
+        technical: "EmailNotificationService.sendFinalResponseSummary().",
+        implementation: "EmailNotificationService.java",
+      },
+      "NAS-28": {
+        title: "File processing scheduler",
+        story: "As an operator, I want an optional in-app cron (e.g. every 10 min) to run processing when not using ControlM so that I can run without external scheduler.",
+        acceptance: [
+          "When scheduler.enabled=true, @Scheduled job runs at scheduler.cron.",
+        ],
+        technical: "FileProcessingScheduler with @Scheduled(cron = \"${scheduler.cron:...}\").",
+        implementation: "FileProcessingScheduler.java",
+      },
+      "NAS-29": {
+        title: "Process on startup",
+        story: "As an operator, I want one processing cycle to run on startup when enabled so that existing inbound files are processed immediately.",
+        acceptance: [
+          "When processor.run-on-startup=true (default), ApplicationRunner runs one cycle after startup.",
+        ],
+        technical: "ProcessOnStartupRunner implements ApplicationRunner with @ConditionalOnProperty.",
+        implementation: "ProcessOnStartupRunner.java",
+      },
+      "NAS-30": {
+        title: "Request/response DTOs",
+        story: "As a developer, I want clear DTOs for API request envelope, batch request/response, final response, and file result so that the API and file contracts are explicit.",
+        acceptance: [
+          "ApiMessageRequest, ApiMessageResponse, BatchApiRequest, BatchApiResponse, FinalFileResponse, FileProcessingResult exist and are used consistently.",
+        ],
+        technical: "All model classes under model/ package.",
+        implementation: "ApiMessageRequest.java, ApiMessageResponse.java, BatchApiRequest.java, BatchApiResponse.java, FinalFileResponse.java, FileProcessingResult.java",
+      },
+      "NAS-31": {
+        title: "Custom exceptions",
+        story: "As a developer, I want dedicated exceptions for API and file-read failures so that error handling and reporting are clear.",
+        acceptance: [
+          "ApiCallException for API failures; FileReadException for file read/parse failures.",
+        ],
+        technical: "Used in ApiCallerService, JsonFileProcessorService, and recovery logic.",
+        implementation: "ApiCallException.java, FileReadException.java",
+      },
+      "NAS-32": {
+        title: "Archive-test profile",
+        story: "As a developer, I want an archive-test profile so that I can test archive with short retention and archive enabled locally.",
+        acceptance: [
+          "Profile archive-test enables archive and sets short retention for testing.",
+        ],
+        technical: "application-archive-test.yml.",
+        implementation: "application-archive-test.yml",
+      },
+      "NAS-33": {
+        title: "Email-test profile",
+        story: "As a developer, I want an email-test profile so that I can test email with MailHog or similar on localhost.",
+        acceptance: [
+          "Profile email-test configures SMTP on localhost, no auth, for local testing.",
+        ],
+        technical: "application-email-test.yml.",
+        implementation: "application-email-test.yml",
+      },
+      "NAS-34": {
+        title: "README and documentation",
+        story: "As a developer or operator, I want a README with overview, folder layout, input formats, configuration, and API contract so that I can run and integrate the application.",
+        acceptance: [
+          "README covers: overview, response file layout, input JSON formats, large-file support, malformed JSON handling, naming, archive, email, trigger response, architecture, ControlM, build/run, configuration, API contract, testing, scripts.",
+        ],
+        technical: "Single README.md at project root.",
+        implementation: "README.md",
+      },
+      "NAS-35": {
+        title: "Jenkins pipeline: build, test, package",
+        story: "As a release engineer, I want a Jenkins pipeline that builds, tests, and packages the application so that we can produce a versioned artifact for deployment to each environment.",
+        acceptance: [
+          "Pipeline checks out code and runs a clean Gradle build with tests.",
+          "Pipeline produces a versioned artifact (e.g., jar) and archives/publishes it.",
+          "Pipeline captures build metadata (git commit, build number, version) and attaches it to the artifact.",
+          "Build fails on test failures and publishes reports (test + coverage if available).",
+        ],
+        technical: "Implement a Jenkinsfile (declarative) that runs Gradle, stores artifacts, and records build metadata. Integrate with your artifact repository if used.",
+        implementation: "TODO: Jenkinsfile, Jenkins job config, artifact repository integration (if any)",
+      },
+      "NAS-36": {
+        title: "Deploy to DEV from Jenkins",
+        story: "As a release engineer, I want Jenkins to deploy the built artifact to DEV so that developers can validate end-to-end behavior early.",
+        acceptance: [
+          "A DEV deploy stage pulls the artifact built in NAS-35 and deploys it to the DEV runtime target.",
+          "Deployment uses DEV configuration (profiles/env vars) and DEV secrets from a secure store.",
+          "Deployment emits a deployment record (who/what/when/where) and links to the build.",
+        ],
+        technical: "Use environment-specific parameters, credentials binding, and a consistent deploy mechanism (e.g., SSH/systemd, container, Kubernetes, or platform standard).",
+        implementation: "TODO: Jenkins deployment stage for DEV + DEV runtime manifests/scripts",
+      },
+      "NAS-37": {
+        title: "Promote to SIT with approvals",
+        story: "As a release engineer, I want to promote the same tested artifact from DEV to SIT with approvals so that SIT uses an immutable artifact and controlled promotion.",
+        acceptance: [
+          "Promotion deploys the same artifact version (no rebuild) to SIT.",
+          "Promotion is gated by approval(s) or automated quality checks.",
+          "SIT deployment uses SIT-specific configuration and secrets handling.",
+        ],
+        technical: "Model SIT as a promotion stage that references the stored artifact and uses a SIT deploy target. Add approval gates if required by process.",
+        implementation: "TODO: Jenkins promotion stage for SIT + SIT runtime manifests/scripts",
+      },
+      "NAS-38": {
+        title: "Promote to UAT with approvals",
+        story: "As a release engineer, I want to promote the artifact to UAT with approvals so that business users can validate behavior before production.",
+        acceptance: [
+          "Promotion deploys the same immutable artifact version to UAT.",
+          "Approvals and/or change ticket references are captured.",
+          "UAT deploy includes post-deploy verification and environment labeling (UAT).",
+        ],
+        technical: "Add UAT stage with approvals and consistent configuration injection. Optionally include release notes and changelog generation.",
+        implementation: "TODO: Jenkins promotion stage for UAT + UAT runtime manifests/scripts",
+      },
+      "NAS-39": {
+        title: "Promote to PERF with performance smoke",
+        story: "As a performance engineer, I want to promote the artifact to PERF and run a performance smoke so that regressions are caught before PROD.",
+        acceptance: [
+          "Promotion deploys the same artifact to PERF.",
+          "A smoke test validates throughput and basic latency targets on representative data.",
+          "Results are recorded and gate subsequent promotion when thresholds are not met.",
+        ],
+        technical: "Add PERF stage with load test integration (e.g., JMeter/Gatling) and thresholds. Keep it smoke-level to run fast per build.",
+        implementation: "TODO: Jenkins PERF stage + performance smoke test suite",
+      },
+      "NAS-40": {
+        title: "Promote to PROD with change controls",
+        story: "As a release engineer, I want a controlled PROD promotion so that we deploy safely with traceability, approvals, and the ability to verify quickly.",
+        acceptance: [
+          "PROD deployment uses immutable artifact promotion (no rebuild).",
+          "Approvals and change controls are enforced (manual gate + ticket ID captured if required).",
+          "Deployment includes a short post-deploy smoke/health verification and records final status.",
+        ],
+        technical: "Add PROD stage with strict gating, auditable logs, and automated health verification using the existing health endpoint.",
+        implementation: "TODO: Jenkins PROD stage + PROD runtime manifests/scripts + change control integration",
+      },
+      "NAS-41": {
+        title: "Environment-specific config and secrets management",
+        story: "As a security-conscious operator, I want environment-specific configuration and secrets to be managed securely so that deployments to DEV/SIT/UAT/PERF/PROD use the right values without committing secrets to git.",
+        acceptance: [
+          "Configuration is parameterized per environment (paths, URLs, cron, retention, email settings).",
+          "Secrets (API tokens, SMTP creds) are stored in Jenkins credentials or a secrets manager, never in git.",
+          "Application can be launched with environment/profile selection (e.g., Spring profiles).",
+        ],
+        technical: "Standardize on Spring profiles and externalized config. Bind secrets at deploy time via Jenkins credentials binding or a secrets manager integration.",
+        implementation: "TODO: env config strategy (profiles), Jenkins credentials bindings, environment manifests",
+      },
+      "NAS-42": {
+        title: "Rollback strategy for failed deployments",
+        story: "As an operator, I want a rollback mechanism so that if a deployment fails or causes issues, we can quickly revert to the previous stable version.",
+        acceptance: [
+          "Rollback can redeploy the previous artifact version to the target environment.",
+          "Rollback procedure is documented and executable from Jenkins (or via an ops runbook).",
+          "Rollback produces an auditable record and re-runs smoke verification.",
+        ],
+        technical: "Maintain artifact version history and implement a rollback stage/job that redeploys a selected version and runs post-deploy checks.",
+        implementation: "TODO: Jenkins rollback job/stage + documentation",
+      },
+      "NAS-43": {
+        title: "Post-deploy smoke tests and health verification",
+        story: "As an operator, I want automated smoke tests after deploy so that we quickly confirm the service is alive and can execute a basic processing trigger safely in non-prod.",
+        acceptance: [
+          "After deploy, Jenkins calls /api/processor/health and validates UP.",
+          "Non-prod only: optionally call /api/processor/status and a safe trigger (or a dry-run/limited test) to validate wiring.",
+          "Failures fail the pipeline stage and provide diagnostic output.",
+        ],
+        technical: "Use simple HTTP checks with timeouts/retries. For trigger checks, use a controlled test input folder in non-prod only to avoid side effects.",
+        implementation: "TODO: Jenkins smoke test scripts (curl/newman/etc) using existing endpoints",
+      },
+      "NAS-44": {
+        title: "Observability: structured logging + metrics",
+        story: "As an operator, I want structured logs and basic metrics so that I can monitor throughput, failures, and latency in production.",
+        acceptance: [
+          "Logs include correlation fields (file name, run id/timestamp, batch number) in a consistent format.",
+          "Expose basic metrics (files processed, batches sent, failures, durations) to the platform standard (e.g., Actuator/Micrometer).",
+          "Sensitive fields are not logged (tokens, PII).",
+        ],
+        technical: "Adopt structured logging and add Micrometer/Actuator if not already present; define counters/timers for key steps.",
+        implementation: "TODO: logging format + metrics instrumentation",
+      },
+      "NAS-45": {
+        title: "Alerts and dashboards for operations",
+        story: "As an operator, I want alerts and dashboards so that I’m notified of failures (API errors, file moves to error) and can see processing trends.",
+        acceptance: [
+          "Alerts exist for high error rate, repeated API failures, and backlog growth (inbound queue size).",
+          "Dashboard shows cycle duration, files per cycle, partial failures, archive activity, and email failures.",
+        ],
+        technical: "Integrate with your monitoring stack (Prometheus/Grafana/Splunk/etc). Base alerts on the metrics/logs from NAS-44.",
+        implementation: "TODO: monitoring dashboards + alert rules",
+      },
+      "NAS-46": {
+        title: "Security hardening and dependency scanning",
+        story: "As a security engineer, I want security checks in CI so that known vulnerabilities and insecure configurations are caught before deployment.",
+        acceptance: [
+          "Dependency vulnerability scanning runs in Jenkins and fails builds above an agreed severity threshold.",
+          "Static analysis / linting runs where applicable and publishes results.",
+          "Secrets scanning prevents accidental credential commits.",
+        ],
+        technical: "Use tools aligned with your org (e.g., OWASP Dependency-Check, Snyk, Trivy, Sonar). Integrate as pipeline stages.",
+        implementation: "TODO: Jenkins security scanning stages + baseline policies",
+      },
+      "NAS-47": {
+        title: "Resilience hardening: timeouts, rate limits, circuit breaker",
+        story: "As an operator, I want stronger resilience controls so that downstream API instability does not cause cascading failures or resource exhaustion.",
+        acceptance: [
+          "Timeouts are enforced consistently (connect/read/write) and tuned per env.",
+          "Retries are bounded and do not overload the downstream system.",
+          "Circuit breaker (or equivalent) prevents hammering a failing downstream API.",
+          "Optional rate limiting / concurrency controls are documented and configurable.",
+        ],
+        technical: "Consider Resilience4j for circuit breaker/bulkhead/rate limiter. Ensure behavior is visible via metrics (open/half-open states).",
+        implementation: "TODO: resilience library integration + config + metrics",
+      },
+      "NAS-48": {
+        title: "Runbook + on-call operational procedures",
+        story: "As on-call support, I want a runbook so that I know how to deploy, rollback, troubleshoot, and recover from common failures.",
+        acceptance: [
+          "Runbook covers: startup/shutdown, trigger endpoints, folder layout, common error scenarios, reprocessing strategy, archive behavior, email troubleshooting.",
+          "Includes contact points, escalation path, and where to find logs/metrics.",
+        ],
+        technical: "Document operational steps and align with Jenkins stages (deploy/promote/rollback).",
+        implementation: "TODO: RUNBOOK.md or additions to README + internal wiki links",
+      },
+      "NAS-49": {
+        title: "Disaster recovery and data retention considerations",
+        story: "As an operator, I want retention and recovery procedures so that we can recover from NAS outages and meet retention requirements.",
+        acceptance: [
+          "Retention expectations for completed/error/responses/archive are documented.",
+          "Procedure exists to restore from backup and safely resume processing without duplicates.",
+        ],
+        technical: "Coordinate with NAS backup/restore strategy. Ensure idempotency considerations (lock files, completed moves, response folders) are understood.",
+        implementation: "TODO: DR/retention documentation + validation steps",
+      },
+      "NAS-50": {
+        title: "Performance/load testing in PERF environment",
+        story: "As a performance engineer, I want repeatable load tests in PERF so that we can validate throughput and capacity before production changes.",
+        acceptance: [
+          "Load tests can run against PERF using representative file sizes and batch volumes.",
+          "Results include throughput, API call latency, CPU/memory, and error rates.",
+          "Performance baselines and pass/fail thresholds are defined.",
+        ],
+        technical: "Automate load tests and integrate with the pipeline (full suite nightly, smoke per change). Use test data that matches production characteristics.",
+        implementation: "TODO: load test suite + execution + reporting",
+      },
+    };
+
+    const emptyState = document.getElementById("empty-state");
+    const detailContent = document.getElementById("detail-content");
+    const sequenceList = document.getElementById("sequence-list");
+
+    // Decorate left list items with sequence + points.
+    document.querySelectorAll(".story-item").forEach((btn) => {
+      const id = btn.getAttribute("data-id");
+      const p = getPlan(id);
+      const raw = btn.textContent || "";
+      const title = raw.replace(id, "").trim();
+      btn.innerHTML = `
+        <span class="story-left">
+          <span class="story-id">${id}</span>
+          <span class="story-title">${title}</span>
+        </span>
+        <span class="story-right">
+          <span class="badge">Seq ${p.sequence}</span>
+          <span class="badge">${p.points} pts</span>
+        </span>
+      `;
+    });
+
+    // Render suggested sequence list in the empty state.
+    if (sequenceList) {
+      const ordered = Object.keys(stories)
+        .map((id) => ({ id, ...getPlan(id), title: stories[id].title }))
+        .sort((a, b) => a.sequence - b.sequence);
+
+      sequenceList.innerHTML = `
+        <ol style="margin: 0; padding-left: 1.25rem;">
+          ${ordered
+            .map(
+              (s) =>
+                `<li style="margin-bottom: 0.35rem;">
+                  <a href="#${s.id}" style="color: var(--accent); text-decoration: none;">${s.id}</a>
+                  <span style="color: var(--text);"> — ${s.title}</span>
+                  <span class="badge" style="margin-left: 0.5rem;">${s.points} pts</span>
+                </li>`
+            )
+            .join("")}
+        </ol>
+      `;
+    }
+
+    function renderDetail(id) {
+      const s = stories[id];
+      if (!s) return;
+      const p = getPlan(id);
+      emptyState.style.display = "none";
+      detailContent.style.display = "block";
+      detailContent.innerHTML = `
+        <div class="detail-header">
+          <h2>${s.title}</h2>
+          <div class="detail-meta">
+            <span class="badge">${id}</span>
+            <span class="badge">Seq ${p.sequence}</span>
+            <span class="badge">${p.points} pts</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <h3>User story</h3>
+          <p>${s.story}</p>
+        </div>
+        <div class="detail-section">
+          <h3>Acceptance criteria</h3>
+          <ul>${s.acceptance.map(a => `<li>${a}</li>`).join("")}</ul>
+        </div>
+        <div class="detail-section">
+          <h3>Technical notes</h3>
+          <p>${s.technical}</p>
+        </div>
+        <div class="detail-section">
+          <h3>Implementation</h3>
+          <p><code>${s.implementation}</code></p>
+        </div>
+      `;
+    }
+
+    document.querySelectorAll(".story-item").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-id");
+        document.querySelectorAll(".story-item").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderDetail(id);
+        if (id) window.location.hash = id;
+      });
+    });
+
+    const hash = window.location.hash.slice(1);
+    if (hash && stories[hash]) {
+      const btn = document.querySelector(`.story-item[data-id="${hash}"]`);
+      if (btn) {
+        btn.classList.add("active");
+        renderDetail(hash);
+      }
+    }
+  </script>
+</body>
+</html>

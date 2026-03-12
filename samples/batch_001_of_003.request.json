@@ -1,0 +1,106 @@
+{
+  "message": {
+    "aboutVersions": {
+      "aboutVersion": {
+        "createdDateTime": "2026-03-05",
+        "aboutVersionIdentifier": "v1.0.0",
+        "requestingSystem": "nasFileProcessor"
+      }
+    },
+    "requestData": {
+      "defaultEventList": [
+        {
+          "loan_id": "LN-2024-10001",
+          "servicer_id": "SVC-00187",
+          "reported_date": "2026-03-05",
+          "bankruptcy": {
+            "bankruptcy_filed": false,
+            "bankruptcy_case_number": null,
+            "bankruptcy_chapter": null,
+            "bankruptcy_filed_date": null,
+            "bankruptcy_discharged_date": null,
+            "bankruptcy_dismissed_date": null,
+            "bankruptcy_status": null,
+            "attorney_name": null,
+            "attorney_phone": null,
+            "court_name": null,
+            "proof_of_claim_filed": false,
+            "proof_of_claim_filed_date": null
+          },
+          "foreclosure": {
+            "foreclosure_initiated": false,
+            "foreclosure_type": null,
+            "foreclosure_start_date": null,
+            "foreclosure_sale_date": null,
+            "foreclosure_status": null,
+            "referral_date": null,
+            "attorney_name": null,
+            "attorney_phone": null,
+            "property_address": null,
+            "property_value_usd": null,
+            "upset_bid_amount_usd": null,
+            "hud_approved": null
+          },
+          "events": [
+            {
+              "event_id": "EVT-001",
+              "event_code": "DLQ-30",
+              "event_description": "Loan became 30 days delinquent",
+              "event_reported_date": "2025-11-15",
+              "comments": "Borrower missed October payment."
+            }
+          ]
+        },
+        {
+          "loan_id": "LN-2024-10002",
+          "servicer_id": "SVC-00187",
+          "reported_date": "2026-03-05",
+          "bankruptcy": {
+            "bankruptcy_filed": true,
+            "bankruptcy_case_number": "BK-2026-00341",
+            "bankruptcy_chapter": "Chapter 7",
+            "bankruptcy_filed_date": "2026-01-15",
+            "bankruptcy_discharged_date": null,
+            "bankruptcy_dismissed_date": null,
+            "bankruptcy_status": "Active",
+            "attorney_name": "David R. Collins",
+            "attorney_phone": "555-304-1122",
+            "court_name": "U.S. Bankruptcy Court - District of Maryland",
+            "proof_of_claim_filed": true,
+            "proof_of_claim_filed_date": "2026-02-01"
+          },
+          "foreclosure": {
+            "foreclosure_initiated": true,
+            "foreclosure_type": "Judicial",
+            "foreclosure_start_date": "2026-02-10",
+            "foreclosure_sale_date": null,
+            "foreclosure_status": "In Progress",
+            "referral_date": "2026-02-05",
+            "attorney_name": "Susan M. Park",
+            "attorney_phone": "555-210-9988",
+            "property_address": "45 Elm Street, Brandywine, MD 20613",
+            "property_value_usd": 310000,
+            "upset_bid_amount_usd": 295000,
+            "hud_approved": false
+          },
+          "events": [
+            {
+              "event_id": "EVT-002",
+              "event_code": "DLQ-60",
+              "event_description": "Loan became 60 days delinquent",
+              "event_reported_date": "2025-12-15",
+              "comments": "Outreach attempted via phone and mail."
+            },
+            {
+              "event_id": "EVT-003",
+              "event_code": "BK-FILE",
+              "event_description": "Borrower filed for bankruptcy",
+              "event_reported_date": "2026-01-15",
+              "comments": "Chapter 7 bankruptcy filed. Automatic stay in effect."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

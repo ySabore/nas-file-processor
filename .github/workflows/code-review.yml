@@ -1,0 +1,55 @@
+# Run code-review-agent on pull requests and post findings as PR comments.
+name: Code Review
+
+on:
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Clone code-review-agent
+        run: git clone https://github.com/ySabore/code-review-agent.git ./code-review-agent-repo
+
+      - name: Install agent dependencies
+        run: pip install -r ./code-review-agent-repo/requirements.txt
+
+      - name: Run code review agent
+        id: agent
+        run: |
+          cd ./code-review-agent-repo
+          CONFIG_ARG=""
+          [ -f "$GITHUB_WORKSPACE/.code-review.yaml" ] && CONFIG_ARG="--config $GITHUB_WORKSPACE/.code-review.yaml"
+          python3 -m code_review_agent --path "$GITHUB_WORKSPACE" --format json $CONFIG_ARG > "$GITHUB_WORKSPACE/review-output.json" 2>/dev/null || true
+          if [ ! -s "$GITHUB_WORKSPACE/review-output.json" ]; then
+            echo '{"issues":[],"count":0}' > "$GITHUB_WORKSPACE/review-output.json"
+          fi
+          COUNT=$(python3 -c "import json; d=json.load(open('$GITHUB_WORKSPACE/review-output.json')); print(d.get('count', len(d.get('issues', []))))" 2>/dev/null || echo "0")
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Post PR review comments
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODE_REVIEW_BOT_TOKEN || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          COMMIT_ID: ${{ github.event.pull_request.head.sha }}
+          REVIEW_JSON_PATH: ${{ github.workspace }}/review-output.json
+        run: |
+          python3 ./code-review-agent-repo/scripts/post_github_review.py

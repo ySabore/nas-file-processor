@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class ApiConfig {
 
     private static final String PLACEHOLDER_HOST = "your-api-endpoint.com";
+    // Review trigger (TEST-123): this line intentionally exceeds 120 characters so the code review agent posts an inline PR comment on this file.
 
     private String baseUrl;
     private String endpoint;

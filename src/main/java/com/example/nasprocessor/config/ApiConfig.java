@@ -21,8 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class ApiConfig {
 
     private static final String PLACEHOLDER_HOST = "your-api-endpoint.com";
-    // TODO tighten API client validation once the downstream team finalizes the expected endpoint and auth contract.
-    // Review trigger: this line intentionally exceeds one hundred and twenty characters so the code review agent reports the line_length rule on this PR.
+    // Tighten API client validation once the downstream team finalizes
+    // the expected endpoint and auth contract.
 
     private String baseUrl;
     private String endpoint;
@@ -37,12 +37,17 @@ public class ApiConfig {
     public void validateBaseUrl() {
         if (baseUrl == null || baseUrl.isBlank()) {
             throw new IllegalStateException(
-                "api.base-url is not set. Set api.base-url (e.g. http://localhost:8081) in application.yml or API_BASE_URL env var.");
+                    "api.base-url is not set. Set api.base-url "
+                            + "(e.g. http://localhost:8081) in application.yml "
+                            + "or API_BASE_URL env var.");
         }
         if (baseUrl.contains(PLACEHOLDER_HOST)) {
             throw new IllegalStateException(
-                "api.base-url is still the placeholder '" + PLACEHOLDER_HOST + "'. " +
-                "Set api.base-url to your process API (e.g. http://localhost:8081) in application.yml or API_BASE_URL env var.");
+                    "api.base-url is still the placeholder '"
+                            + PLACEHOLDER_HOST
+                            + "'. Set api.base-url to your process API "
+                            + "(e.g. http://localhost:8081) in application.yml "
+                            + "or API_BASE_URL env var.");
         }
     }
 

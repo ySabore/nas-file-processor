@@ -55,3 +55,9 @@ jobs:
           REVIEW_JSON_PATH: ${{ github.workspace }}/review-output.json
         run: |
           python3 ./code-review-agent-repo/scripts/post_github_review.py
+
+      - name: Fail when review issues exist
+        if: ${{ steps.agent.outputs.count != '0' }}
+        run: |
+          echo "Code review agent found ${{ steps.agent.outputs.count }} issue(s)."
+          exit 1

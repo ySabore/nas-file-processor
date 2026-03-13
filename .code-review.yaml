@@ -3,6 +3,14 @@
 rules:
   max_line_length: 120
   disallow_todo_without_ticket: true
+  disallow_trailing_whitespace: true
+  disallow_tab_indentation: true
+  disallow_merge_conflict_markers: true
+  require_newline_at_eof: true
+  disallow_potential_secrets: true
+  disallow_debug_statements: true
+  enforce_file_length: false
+  max_file_lines: 1500
 
 paths:
   include: ["**/*.java", "**/*.yml", "**/*.yaml", "**/*.gradle", "**/*.py"]

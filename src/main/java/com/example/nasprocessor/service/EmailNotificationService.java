@@ -82,16 +82,28 @@ public class EmailNotificationService {
             // Attach JSON with structure preserved
             Map<String, Object> responsePayload = buildResponsePayload(results);
             @SuppressWarnings("unchecked")
-            Map<String, List<FileProcessingResult>> detailsByFolder = (Map<String, List<FileProcessingResult>>) responsePayload.get("details");
-            String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(responsePayload);
-            helper.addAttachment(baseName + ".json", new ByteArrayResource(json.getBytes(StandardCharsets.UTF_8)), "application/json");
+            Map<String, List<FileProcessingResult>> detailsByFolder =
+                    (Map<String, List<FileProcessingResult>>) responsePayload.get("details");
+            String json = objectMapper
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(responsePayload);
+            helper.addAttachment(
+                    baseName + ".json",
+                    new ByteArrayResource(json.getBytes(StandardCharsets.UTF_8)),
+                    "application/json");
 
             // Attach HTML report with same structure
             String html = buildHtmlReport(responsePayload, detailsByFolder);
-            helper.addAttachment(baseName + ".html", new ByteArrayResource(html.getBytes(StandardCharsets.UTF_8)), "text/html");
+            helper.addAttachment(
+                    baseName + ".html",
+                    new ByteArrayResource(html.getBytes(StandardCharsets.UTF_8)),
+                    "text/html");
 
             mailSender.send(message);
-            log.info("Sent final response summary email to {} recipient(s) with JSON and HTML attachments", recipients.size());
+            log.info(
+                    "Sent final response summary email to {} recipient(s) "
+                            + "with JSON and HTML attachments",
+                    recipients.size());
         } catch (MessagingException e) {
             log.error("Failed to send final response email: {}", e.getMessage(), e);
         } catch (Exception e) {
@@ -136,15 +148,25 @@ public class EmailNotificationService {
     }
 
     private String buildSubject(List<FileProcessingResult> results) {
-        long success = results.stream().filter(r -> r.getStatus() == FileProcessingResult.Status.SUCCESS).count();
-        long failed = results.stream().filter(r -> r.getStatus() == FileProcessingResult.Status.FAILED).count();
-        long partial = results.stream().filter(r -> r.getStatus() == FileProcessingResult.Status.PARTIAL_SUCCESS).count();
+        long success = results.stream()
+                .filter(r -> r.getStatus() == FileProcessingResult.Status.SUCCESS)
+                .count();
+        long failed = results.stream()
+                .filter(r -> r.getStatus() == FileProcessingResult.Status.FAILED)
+                .count();
+        long partial = results.stream()
+                .filter(r -> r.getStatus() == FileProcessingResult.Status.PARTIAL_SUCCESS)
+                .count();
 
         if (failed > 0 || partial > 0) {
-            return String.format("NAS File Processor - %d file(s) processed (%d success, %d partial, %d failed)",
+            return String.format(
+                    "NAS File Processor - %d file(s) processed "
+                            + "(%d success, %d partial, %d failed)",
                     results.size(), success, partial, failed);
         }
-        return String.format("NAS File Processor - %d file(s) processed successfully", results.size());
+        return String.format(
+                "NAS File Processor - %d file(s) processed successfully",
+                results.size());
     }
 
     private String buildBody(List<FileProcessingResult> results) {
@@ -169,24 +191,33 @@ public class EmailNotificationService {
     /**
      * Build standalone HTML report with details grouped by folder (same structure as JSON).
      */
-    private String buildHtmlReport(Map<String, Object> responsePayload, Map<String, List<FileProcessingResult>> detailsByFolder) {
+    private String buildHtmlReport(
+            Map<String, Object> responsePayload,
+            Map<String, List<FileProcessingResult>> detailsByFolder) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!DOCTYPE html><html><head><meta charset='UTF-8'>");
         sb.append("<title>NAS File Processor - Processing Response</title>");
         sb.append("<style>");
         sb.append("body{font-family:sans-serif;margin:20px;background:#f5f5f5;}");
-        sb.append(".summary{background:#fff;padding:15px;margin-bottom:20px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);}");
+        sb.append(
+                ".summary{background:#fff;padding:15px;margin-bottom:20px;"
+                        + "border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);}");
         sb.append(".summary table{width:auto;}");
         sb.append("h2{color:#333;border-bottom:1px solid #ddd;padding-bottom:8px;}");
         sb.append("h3{color:#555;margin-top:20px;}");
-        sb.append("table{border-collapse:collapse;width:100%;background:#fff;margin-bottom:20px;border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.1);}");
+        sb.append(
+                "table{border-collapse:collapse;width:100%;background:#fff;"
+                        + "margin-bottom:20px;border-radius:6px;overflow:hidden;"
+                        + "box-shadow:0 1px 3px rgba(0,0,0,.1);}");
         sb.append("th,td{border:1px solid #ddd;padding:10px;text-align:left;}");
         sb.append("th{background:#4a90d9;color:#fff;}");
         sb.append("tr:nth-child(even){background:#f9f9f9;}");
         sb.append(".status-SUCCESS{color:#2e7d32;}");
         sb.append(".status-FAILED{color:#c62828;}");
         sb.append(".status-PARTIAL_SUCCESS{color:#ef6c00;}");
-        sb.append(".folder-section{background:#fff;padding:15px;margin-bottom:15px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);}");
+        sb.append(
+                ".folder-section{background:#fff;padding:15px;margin-bottom:15px;"
+                        + "border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);}");
         sb.append("</style></head><body>");
 
         sb.append("<h2>NAS File Processor - Processing Response</h2>");
@@ -194,7 +225,9 @@ public class EmailNotificationService {
         // Summary section
         sb.append("<div class='summary'>");
         sb.append("<h3>Summary</h3>");
-        sb.append("<table><tr><th>Status</th><th>Files Found</th><th>Succeeded</th><th>Partial</th><th>Failed</th><th>Timestamp</th></tr>");
+        sb.append(
+                "<table><tr><th>Status</th><th>Files Found</th><th>Succeeded</th>"
+                        + "<th>Partial</th><th>Failed</th><th>Timestamp</th></tr>");
         sb.append("<tr>");
         sb.append("<td>").append(escape(String.valueOf(responsePayload.get("status")))).append("</td>");
         sb.append("<td>").append(responsePayload.get("filesFound")).append("</td>");
@@ -211,17 +244,29 @@ public class EmailNotificationService {
                 List<FileProcessingResult> items = entry.getValue();
                 sb.append("<div class='folder-section'>");
                 sb.append("<h3>").append(escape(folder)).append("</h3>");
-                sb.append("<table><tr><th>File</th><th>Status</th><th>Records</th><th>Duration</th><th>Start</th><th>End</th><th>Final Response Path</th></tr>");
+                sb.append(
+                        "<table><tr><th>File</th><th>Status</th><th>Records</th>"
+                                + "<th>Duration</th><th>Start</th><th>End</th>"
+                                + "<th>Final Response Path</th></tr>");
                 for (FileProcessingResult r : items) {
                     String status = r.getStatus().name();
                     sb.append("<tr>");
                     sb.append("<td>").append(escape(r.getFileName())).append("</td>");
-                    sb.append("<td class='status-").append(status).append("'>").append(escape(status)).append("</td>");
+                    sb.append("<td class='status-")
+                            .append(status)
+                            .append("'>")
+                            .append(escape(status))
+                            .append("</td>");
                     sb.append("<td>").append(r.getProcessedRecords()).append("/").append(r.getTotalRecords()).append("</td>");
                     sb.append("<td>").append(r.getDurationMs()).append(" ms</td>");
                     sb.append("<td>").append(escape(String.valueOf(r.getStartTime()))).append("</td>");
                     sb.append("<td>").append(escape(String.valueOf(r.getEndTime()))).append("</td>");
-                    sb.append("<td>").append(escape(r.getFinalResponseFilePath() != null ? r.getFinalResponseFilePath() : "-")).append("</td>");
+                    sb.append("<td>")
+                            .append(escape(
+                                    r.getFinalResponseFilePath() != null
+                                            ? r.getFinalResponseFilePath()
+                                            : "-"))
+                            .append("</td>");
                     sb.append("</tr>");
                 }
                 sb.append("</table></div>");

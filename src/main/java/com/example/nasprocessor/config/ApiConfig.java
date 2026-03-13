@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class ApiConfig {
 
     private static final String PLACEHOLDER_HOST = "your-api-endpoint.com";
+    // TODO tighten API client validation once the downstream team finalizes the expected endpoint and auth contract.
+    // Review trigger: this line intentionally exceeds one hundred and twenty characters so the code review agent reports the line_length rule on this PR.
 
     private String baseUrl;
     private String endpoint;
